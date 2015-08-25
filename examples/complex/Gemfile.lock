@@ -1,0 +1,43 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    babel-source (5.8.19)
+    babel-transpiler (0.7.0)
+      babel-source (>= 4.0, < 6)
+      execjs (~> 2.0)
+    execjs (2.6.0)
+    hike (1.2.3)
+    libv8 (3.16.14.7)
+    opal (0.8.0)
+      hike (~> 1.2)
+      sourcemap (~> 0.1.0)
+      sprockets (~> 3.1)
+      tilt (>= 1.4)
+    opal-activesupport (0.1.0)
+      opal (>= 0.5.0, < 1.0.0)
+    rack (1.6.4)
+    rake (10.4.2)
+    react.rb (0.2.0)
+      opal (~> 0.6)
+      opal-activesupport (~> 0)
+      sprockets-es6 (~> 0)
+      therubyracer (~> 0)
+    ref (1.0.5)
+    sourcemap (0.1.1)
+    sprockets (3.3.3)
+      rack (~> 1.0)
+    sprockets-es6 (0.7.0)
+      babel-transpiler
+      sprockets (>= 3.0.0)
+    therubyracer (0.12.2)
+      libv8 (~> 3.16.14.0)
+      ref
+    tilt (2.0.1)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  opal (~> 0.8.0)
+  rake
+  react.rb

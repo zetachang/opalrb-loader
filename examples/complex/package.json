@@ -1,0 +1,12 @@
+{
+  "name": "complex",
+  "version": "1.0.0",
+  "description": "",
+  "main": "webpack.config.js",
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "opalrb-loader": "file:../..",
+    "react": "^0.13.3"
+  }
+}

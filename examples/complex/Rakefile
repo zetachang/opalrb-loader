@@ -1,0 +1,9 @@
+require "bundler"
+
+Bundler.require
+
+desc "Start webpack"
+task :webpack do
+  patches_folder = File.expand_path('patches').untaint
+  exec({"OPAL_LOAD_PATH" => Opal.paths.insert(0, patches_folder).join(":")}, "webpack-dev-server")
+end
