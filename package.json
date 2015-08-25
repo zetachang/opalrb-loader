@@ -1,14 +1,14 @@
 {
   "name": "opalrb-loader",
-  "version": "1.0.0",
-  "description": "- [ ] Import corelib",
+  "version": "0.0.1",
+  "description": "Opal Ruby module loader for webpack",
   "main": "index.js",
   "scripts": {
     "start": "babel --watch index.es6.js --out-file index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "David Chang",
+  "license": "MIT",
   "dependencies": {
     "babel-runtime": "^5.8.20",
     "bundle-loader": "^0.5.4",
