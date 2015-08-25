@@ -8,6 +8,14 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "David Chang",
+  "keywords": [
+    "webpack",
+    "loader",
+    "opal",
+    "ruby",
+    "transpiler",
+    "module"
+  ],
   "license": "MIT",
   "dependencies": {
     "babel-runtime": "^5.8.20",
