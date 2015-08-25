@@ -27238,5 +27238,3 @@ if (n == null) n = nil;
     })(self, null)
   })(self);
 })(Opal);
-
-module.exports = Opal;
