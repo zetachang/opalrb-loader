@@ -101,6 +101,6 @@ export default function(source) {
           
     callback(null, prepend.join(" ") + "\n" + result, JSON.parse(node.toStringWithSourceMap().map.toString()));
   } else {
-    callback(null, result);
+    callback(null, prepend.join(" ") + "\n" + result);
   }
 };
