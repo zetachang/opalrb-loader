@@ -2,6 +2,9 @@ require "opal"
 require "browser"
 require "react"
 
+# add rules in style.css to document
+`require("style!css!./style.css")`
+
 class HelloFromReact
   include React::Component
   

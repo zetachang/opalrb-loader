@@ -6,7 +6,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "css-loader": "^0.16.0",
     "opalrb-loader": "file:../..",
-    "react": "^0.13.3"
+    "react": "^0.13.3",
+    "style-loader": "^0.12.3"
   }
 }
