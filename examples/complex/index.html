@@ -2,8 +2,10 @@
   <meta charset="utf-8">
   <!-- Load react source directly, since React.rb rely on global context -->
   <script src="node_modules/react/dist/react.js"></script>
+  <script src="bundle.js"></script>
   <script src="http://localhost:8080/webpack-dev-server.js"></script>
 </head>
 <body>
-  <script src="bundle.js"></script>
+  <div id="react"></div>
+  <div id="opal-browser"></div>
 </body>
