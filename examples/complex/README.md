@@ -5,7 +5,7 @@
 1. Run `npm install`.
 2. Run `npm install -g webpack-dev-server`.
 3. Run `bundle install`.
-4. Run 'rake webpack' to start webpack-dev-server
+4. Run `rake webpack` to start webpack-dev-server
 4. Open http://localhost:8080 and see the console.
 
 ## Explanation
