@@ -19,7 +19,6 @@ module: {
   loaders: [
     {
       test: /\.rb?$/,
-      exclude: /(node_modules|bower_components)/,
       loader: 'opalrb-loader'
     }
   ]
@@ -28,14 +27,31 @@ module: {
 
 ### Options
 
-See the `Opal::Compiler` [options](https://github.com/opal/opal/blob/master/lib/opal/compiler.rb).
+See `Opal::Compiler` [options](https://github.com/opal/opal/blob/master/lib/opal/compiler.rb) for possible options.
 
-### Examples
+```javascript
+// webpack.config.js 
+module: {
+  loaders: [
+    {
+      test: /\.rb?$/,
+      loader: 'opalrb-loader',
+      query: {
+        requirable: false,
+        freezing: false,
+      }
+    }
+  ]
+}
+```
 
-It's under [Examples](https://github.com/zetachang/opalrb-loader/tree/master/examples) folder.
+#### OPAL_LOAD_PATH
 
-* simple: Basic setup without further dependency.
-* complex: Compile opal/corelib and other gems.
+By passing `OPAL_LOAD_PATH` environment variable to webpack, the loader will correctly resolve file other than relative path.
+
+`opalrb-loader` is only bundled with compiler module. It left the decision on managing runtime, corelib or gems to developer. 
+
+See the example [Rakefile](https://github.com/zetachang/opalrb-loader/blob/master/examples/complex/Rakefile) for how to integrate using other Opal gems. 
 
 ### Compared to `Opal::Builder`
 * Relative `require` is correctly resolved.
@@ -45,6 +61,13 @@ It's under [Examples](https://github.com/zetachang/opalrb-loader/tree/master/exa
 ### Known issues
 * First time compiling is relatively slow compared to Ruby one, use `--watch` option for webpack to speed up dev iteration.
 * Use `require` to load JS file is broken, but you can write as below to load JS module (webpack will correctly resolve it).
+
+### Examples
+
+It's under [Examples](https://github.com/zetachang/opalrb-loader/tree/master/examples) folder.
+
+* simple: Basic setup without further dependency.
+* complex: Compile opal/corelib and other gems.
 
 ```ruby
 # Inside ruby file
