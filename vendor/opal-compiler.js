@@ -27157,7 +27157,7 @@ Opal.modules["opal-parser"] = function(Opal) {
   }
   var self = Opal.top, $scope = Opal, nil = Opal.nil, $breaker = Opal.breaker, $slice = Opal.slice, $module = Opal.module, $klass = Opal.klass;
 
-  Opal.add_stubs(['$require', '$each', '$<<', '$-@', '$loop', '$&', '$>>', '$|', '$[]', '$join', '$scan', '$yylval=', '$to_f', '$gsub', '$matched', '$scanner', '$to_i', '$raise', '$peek']);
+  Opal.add_stubs(['$require', '$each', '$<<', '$-@', '$loop', '$&', '$>>', '$|', '$[]', '$join', '$attr_reader', '$anchor', '$scan_until', '$length', '$size', '$rest', '$pos=', '$private']);
   self.$require("opal");
   self.$require("opal-source-maps");
   self.$require("opal-parser");
@@ -27198,43 +27198,323 @@ if (n == null) n = nil;
       })
     })(self)
   })(self);
-  return (function($base) {
-    var self = $module($base, 'Opal');
+  return (function($base, $super) {
+    function $StringScanner(){};
+    var self = $StringScanner = $klass($base, $super, 'StringScanner', $StringScanner);
 
     var def = self.$$proto, $scope = self.$$scope;
 
-    (function($base, $super) {
-      function $Lexer(){};
-      var self = $Lexer = $klass($base, $super, 'Lexer', $Lexer);
+    def.pos = def.string = def.working = def.matched = def.prev_pos = def.match = nil;
+    self.$attr_reader("pos");
 
-      var def = self.$$proto, $scope = self.$$scope;
+    self.$attr_reader("matched");
 
-      return (def.$process_numeric = function() {
-        var $a, $b, self = this;
+    def.$initialize = function(string) {
+      var self = this;
 
-        self.lex_state = "expr_end";
-        if ((($a = self.$scan(/([\d_]+\.[\d_]+\b|[\d_]+(\.[\d_]+)?[eE][-+]?[\d_]+\b)/)) !== nil && (!$a.$$is_boolean || $a == true))) {
-          (($a = [self.$scanner().$matched().$gsub(/_/, "").$to_f()]), $b = self, $b['$yylval='].apply($b, $a), $a[$a.length-1]);
-          return "tFLOAT";
-        } else if ((($a = self.$scan(/([^0][\d_]*|0)\b/)) !== nil && (!$a.$$is_boolean || $a == true))) {
-          (($a = [self.$scanner().$matched().$gsub(/_/, "").$to_i()]), $b = self, $b['$yylval='].apply($b, $a), $a[$a.length-1]);
-          return "tINTEGER";
-        } else if ((($a = self.$scan(/0[bB](0|1|_)+/)) !== nil && (!$a.$$is_boolean || $a == true))) {
-          (($a = [self.$scanner().$matched().$to_i(2)]), $b = self, $b['$yylval='].apply($b, $a), $a[$a.length-1]);
-          return "tINTEGER";
-        } else if ((($a = self.$scan(/0[xX](\d|[a-f]|[A-F]|_)+/)) !== nil && (!$a.$$is_boolean || $a == true))) {
-          (($a = [self.$scanner().$matched().$to_i(16)]), $b = self, $b['$yylval='].apply($b, $a), $a[$a.length-1]);
-          return "tINTEGER";
-        } else if ((($a = self.$scan(/0[oO]?([0-7]|_)+/)) !== nil && (!$a.$$is_boolean || $a == true))) {
-          (($a = [self.$scanner().$matched().$to_i(8)]), $b = self, $b['$yylval='].apply($b, $a), $a[$a.length-1]);
-          return "tINTEGER";
-        } else if ((($a = self.$scan(/0[dD]([0-9]|_)+/)) !== nil && (!$a.$$is_boolean || $a == true))) {
-          (($a = [self.$scanner().$matched().$gsub(/_/, "").$to_i()]), $b = self, $b['$yylval='].apply($b, $a), $a[$a.length-1]);
-          return "tINTEGER";
-          } else {
-          return self.$raise("Lexing error on numeric type: `" + (self.$scanner().$peek(5)) + "`")
-        };
-      }, nil) && 'process_numeric'
-    })(self, null)
-  })(self);
+      self.string = string;
+      self.pos = 0;
+      self.matched = nil;
+      self.working = string;
+      return self.match = [];
+    };
+
+    self.$attr_reader("string");
+
+    def['$beginning_of_line?'] = function() {
+      var self = this;
+
+      return self.pos === 0 || self.string.charAt(self.pos - 1) === "\n";
+    };
+
+    Opal.defn(self, '$bol?', def['$beginning_of_line?']);
+
+    def.$scan = function(pattern) {
+      var self = this;
+
+      pattern = self.$anchor(pattern);
+      
+      var result = pattern.exec(self.working);
+      if (result == null) {
+        return self.matched = nil;
+      }
+      else if (typeof(result) === 'object') {
+        self.prev_pos = self.pos;
+        self.pos     += result[0].length;
+        self.working  = self.working.substring(result[0].length);
+        self.matched  = result[0];
+        self.match    = result;
+        return result[0];
+      }
+      else if (typeof(result) === 'string') {
+        self.pos     += result.length;
+        self.working  = self.working.substring(result.length);
+        return result;
+      }
+      else {
+        return nil;
+      }
+    ;
+    };
+
+    def.$scan_until = function(pattern) {
+      var self = this;
+
+      pattern = self.$anchor(pattern);
+      
+      var pos     = self.pos,
+          working = self.working,
+          result;
+      while (true) {
+        result   = pattern.exec(working);
+        pos     += 1;
+        working  = working.substr(1);
+        if (result == null) {
+          if (working.length === 0) {
+            return self.matched = nil;
+          }
+          continue;
+        }
+        self.matched  = self.string.substr(self.pos, pos - self.pos - 1 + result[0].length);
+        self.prev_pos = pos - 1;
+        self.pos      = pos;
+        self.working  = working.substr(result[0].length);
+        return self.matched;
+      }
+    ;
+    };
+
+    def['$[]'] = function(idx) {
+      var self = this;
+
+      
+      var match = self.match;
+      if (idx < 0) {
+        idx += match.length;
+      }
+      if (idx < 0 || idx >= match.length) {
+        return nil;
+      }
+      if (match[idx] == null) {
+        return nil;
+      }
+      return match[idx];
+    ;
+    };
+
+    def.$check = function(pattern) {
+      var self = this;
+
+      pattern = self.$anchor(pattern);
+      
+      var result = pattern.exec(self.working);
+      if (result == null) {
+        return self.matched = nil;
+      }
+      return self.matched = result[0];
+    ;
+    };
+
+    def.$check_until = function(pattern) {
+      var self = this;
+
+      
+      var prev_pos = self.prev_pos,
+          pos      = self.pos;
+      var result = self.$scan_until(pattern);
+      if (result !== nil) {
+        self.matched = result.substr(-1);
+        self.working = self.string.substr(pos);
+      }
+      self.prev_pos = prev_pos;
+      self.pos      = pos;
+      return result;
+    ;
+    };
+
+    def.$peek = function(length) {
+      var self = this;
+
+      return self.working.substring(0, length);
+    };
+
+    def['$eos?'] = function() {
+      var self = this;
+
+      return self.working.length === 0;
+    };
+
+    def['$exist?'] = function(pattern) {
+      var self = this;
+
+      
+      var result = pattern.exec(self.working);
+      if (result == null) {
+        return nil;
+      }
+      else if (result.index == 0) {
+        return 0;
+      }
+      else {
+        return result.index + 1;
+      }
+    ;
+    };
+
+    def.$skip = function(pattern) {
+      var self = this;
+
+      pattern = self.$anchor(pattern);
+      
+      var result = pattern.exec(self.working);
+      if (result == null) {
+        return self.matched = nil;
+      }
+      else {
+        var match_str = result[0];
+        var match_len = match_str.length;
+        self.matched   = match_str;
+        self.prev_pos  = self.pos;
+        self.pos      += match_len;
+        self.working   = self.working.substring(match_len);
+        return match_len;
+      }
+    ;
+    };
+
+    def.$skip_until = function(pattern) {
+      var self = this;
+
+      
+      var result = self.$scan_until(pattern);
+      if (result === nil) {
+        return nil;
+      }
+      else {
+        self.matched = result.substr(-1);
+        return result.length;
+      }
+    ;
+    };
+
+    def.$get_byte = function() {
+      var self = this;
+
+      
+      var result = nil;
+      if (self.pos < self.string.length) {
+        self.prev_pos  = self.pos;
+        self.pos      += 1;
+        result      = self.matched = self.working.substring(0, 1);
+        self.working   = self.working.substring(1);
+      }
+      else {
+        self.matched = nil;
+      }
+      return result;
+    ;
+    };
+
+    Opal.defn(self, '$getch', def.$get_byte);
+
+    def['$match?'] = function(pattern) {
+      var self = this;
+
+      pattern = self.$anchor(pattern);
+      
+      var result = pattern.exec(self.working);
+      if (result == null) {
+        return nil;
+      }
+      else {
+        self.prev_pos = self.pos;
+        return result[0].length;
+      }
+    ;
+    };
+
+    def['$pos='] = function(pos) {
+      var self = this;
+
+      
+      if (pos < 0) {
+        pos += self.string.$length();
+      }
+    ;
+      self.pos = pos;
+      return self.working = self.string.slice(pos);
+    };
+
+    def.$post_match = function() {
+      var self = this;
+
+      
+      if (self.matched === nil) {
+        return nil;
+      }
+      return self.string.substr(self.pos);
+    ;
+    };
+
+    def.$pre_match = function() {
+      var self = this;
+
+      
+      if (self.matched === nil) {
+        return nil;
+      }
+      return self.string.substr(0, self.prev_pos);
+    ;
+    };
+
+    def.$reset = function() {
+      var self = this;
+
+      self.working = self.string;
+      self.matched = nil;
+      return self.pos = 0;
+    };
+
+    def.$rest = function() {
+      var self = this;
+
+      return self.working;
+    };
+
+    def['$rest?'] = function() {
+      var self = this;
+
+      return self.working.length !== 0;
+    };
+
+    def.$rest_size = function() {
+      var self = this;
+
+      return self.$rest().$size();
+    };
+
+    def.$terminate = function() {
+      var $a, $b, self = this;
+
+      self.match = nil;
+      return (($a = [self.string.$length()]), $b = self, $b['$pos='].apply($b, $a), $a[$a.length-1]);
+    };
+
+    def.$unscan = function() {
+      var self = this;
+
+      self.pos = self.prev_pos;
+      self.prev_pos = nil;
+      self.match = nil;
+      return self;
+    };
+
+    self.$private();
+
+    return (def.$anchor = function(pattern) {
+      var self = this;
+
+      return new RegExp('^(?:' + pattern.toString().substr(1, pattern.toString().length - 2) + ')');
+    }, nil) && 'anchor';
+  })(self, null);
 })(Opal);
