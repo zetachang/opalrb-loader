@@ -140,8 +140,9 @@ exports["default"] = function (source) {
     var map = _sourceMap.SourceMapGenerator.fromSourceMap(consumer);
     map.setSourceContent(this.resourcePath, source);
 
-    // Add one source node for prepended text
-    var node = new _sourceMap.SourceNode(null, null, null, [new _sourceMap.SourceNode(null, null, this.resourcePath, prepend.join(" ")), _sourceMap.SourceNode.fromStringWithSourceMap(result, new _sourceMap.SourceMapConsumer(map.toString()))]).join('\n');
+    // Prepend the chunk of our injected script
+    var node = _sourceMap.SourceNode.fromStringWithSourceMap(result, new _sourceMap.SourceMapConsumer(map.toString()));
+    node.prepend(prepend.join(" "));
 
     callback(null, prepend.join(" ") + "\n" + result, JSON.parse(node.toStringWithSourceMap().map.toString()));
   } else {
