@@ -123,7 +123,7 @@ exports["default"] = function (source) {
     var resolved = resolveFilename(_this, filename);
     if (resolved.match(/\.js$/)) {
       prepend.push("require('" + require.resolve('imports-loader') + "!" + resolved + "');");
-      prepend.push("Opal.mark_as_loaded(Opal.normalize_loadable_path('" + filename + "'));");
+      prepend.push("Opal.mark_as_loaded('" + filename + "');");
     } else {
       prepend.push("require('!!" + currentLoader + "?file=" + filename + "&requirable=true!" + resolved + "');");
     }
