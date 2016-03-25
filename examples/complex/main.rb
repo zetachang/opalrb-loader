@@ -1,4 +1,5 @@
 require "opal"
+require "opal/version"
 require "browser"
 require "react"
 
@@ -9,7 +10,10 @@ class HelloFromReact
   include React::Component
   
   def render
-    h1 { "Hello from React!" }
+    div do
+      h1 { "Hello from React!" }
+      h2 { "Using Opal #{Opal::VERSION}" }
+    end
   end
 end
 
