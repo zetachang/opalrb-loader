@@ -78,8 +78,9 @@ It's under [Examples](https://github.com/zetachang/opalrb-loader/tree/master/exa
 
 ## Development
 
-* `./build_compiler.sh` to build compiler
-* `npm start` to compile `index.es6.js` ([Babel CLI](https://babeljs.io/docs/usage/cli/) is required)
+* `npm install`
+* `npm run build_compiler` to build compiler
+* `npm start` to compile & watch `index.es6.js`
 
 ## Contact
 
