@@ -6,7 +6,9 @@
   "scripts": {
     "start": "babel --watch index.es6.js --out-file index.js",
     "build_compiler": "bundle exec opal --no-exit -c compiler.rb | uglifyjs > vendor/opal-compiler.js",
-    "test": "mocha"
+    "test": "mocha",
+    "prepare": "npm run build_compiler; babel index.es6.js --out-file index.js; npm test",
+    "prepublish": "npm run prepare"
   },
   "author": "David Chang",
   "keywords": [
