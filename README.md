@@ -5,6 +5,10 @@ This package allows transpiling Ruby files using [Opal](http://opalrb.org) and [
 
 Check out [this blog post](https://medium.com/@zetachang/from-sprockets-to-webpack-5f3d1afbd1b0) if you are interested in the project background.
 
+[![npm version](https://img.shields.io/npm/v/opalrb-loader.svg?style=flat-square)](https://www.npmjs.com/package/opalrb-loader)
+[![npm downloads](https://img.shields.io/npm/dt/opalrb-loader.svg?style=flat-square)](https://www.npmjs.com/package/opalrb-loader)
+[![Circle CI](https://circleci.com/gh/zetachang/opalrb-loader.svg?style=svg)](https://circleci.com/gh/zetachang/opalrb-loader)
+
 ## Installation
 
 ```bash
