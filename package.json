@@ -6,7 +6,7 @@
   "scripts": {
     "start": "babel --watch index.es6.js --out-file index.js",
     "build_compiler": "bundle exec opal --no-exit -c compiler.rb | uglifyjs > vendor/opal-compiler.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha"
   },
   "author": "David Chang",
   "keywords": [
