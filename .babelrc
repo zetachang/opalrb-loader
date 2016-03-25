@@ -1,4 +1,1 @@
-{
-  "stage": 2,
-  "optional": ["runtime"],
-}
+{ "presets": ["es2015"] }

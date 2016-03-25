@@ -51,7 +51,7 @@ function resolveFilename(loaderContext, filename) {
   }
 }
 
-export default function(source) {  
+module.exports = function(source) {  
   const callback = this.async();
   if(!callback) throw new Error("Sync mode not supported");
 
