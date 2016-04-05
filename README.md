@@ -20,7 +20,7 @@ npm install opalrb-loader --save-dev
 [Documentation: Using loaders](http://webpack.github.io/docs/using-loaders.html)
 
 ```javascript
-// webpack.config.js 
+// webpack.config.js
 module: {
   loaders: [
     {
@@ -36,7 +36,7 @@ module: {
 See `Opal::Compiler` [options](https://github.com/opal/opal/blob/master/lib/opal/compiler.rb) for possible options.
 
 ```javascript
-// webpack.config.js 
+// webpack.config.js
 module: {
   loaders: [
     {
@@ -55,13 +55,12 @@ module: {
 
 By passing `OPAL_LOAD_PATH` environment variable to webpack, the loader will correctly resolve file other than relative path.
 
-`opalrb-loader` is only bundled with compiler module. It left the decision on managing runtime, corelib or gems to developer. 
+`opalrb-loader` is only bundled with compiler module. It left the decision on managing runtime, corelib or gems to developer.
 
-See the example [Rakefile](https://github.com/zetachang/opalrb-loader/blob/master/examples/complex/Rakefile) for how to integrate using other Opal gems. 
+See the example [Rakefile](https://github.com/zetachang/opalrb-loader/blob/master/examples/complex/Rakefile) for how to integrate using other Opal gems.
 
 ### Compared to `Opal::Builder`
 * Relative `require` is correctly resolved.
-* `require_trees` is **not yet implemented**.
 * erb is not supported (which should be implemented as separate loader).
 
 ### Known issues
