@@ -25,6 +25,7 @@ describe('Opal loader', function(){
     };
 
   beforeEach(function(done) {
+    fsExtra.copySync('./test/fixtures/dependency.rb', './test/fixtures/dependency.rb.backup', {clobber: true})
     rimraf(outputDir, function(err) {
       if (err) { return done(err); }
       mkdirp(outputDir, done);
@@ -65,7 +66,6 @@ describe('Opal loader', function(){
     });
     webpack(config, function(err, stats) {
       expect(err).to.be(null)
-      fsExtra.copySync('./test/fixtures/dependency.rb', './test/fixtures/dependency.rb.backup', {clobber: true})
       fs.writeFileSync('./test/fixtures/dependency.rb', 'HELLO=456')
       setTimeout(function() {
         fs.readdir(outputDir, function(err, files) {
