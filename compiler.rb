@@ -1,8 +1,9 @@
 require "opal"
 require "opal-source-maps"
 require "opal-parser"
+require "pathname"
 
-# MRI implement `begin/end while condition` differently 
+# MRI implement `begin/end while condition` differently
 # See issue: https://github.com/opal/opal/issues/575
 module SourceMap
   module VLQ
@@ -19,6 +20,30 @@ module SourceMap
         end
       end
       result.join
+    end
+  end
+end
+
+# Backports from opal 0.10
+dummy_path = Pathname.new('foo')
+unless dummy_path.respond_to?(:+) && dummy_path.respond_to?(:join)
+  class Pathname
+    def +(other)
+      other = Pathname.new(other) unless Pathname === other
+      Pathname.new(File.join(@path, other.to_path))
+    end
+
+    def join(*args)
+      args.unshift self
+      result = args.pop
+      result = Pathname.new(result) unless Pathname === result
+      return result if result.absolute?
+      args.reverse_each {|arg|
+        arg = Pathname.new(arg) unless Pathname === arg
+        result = arg + result
+        return result if result.absolute?
+      }
+      result
     end
   end
 end

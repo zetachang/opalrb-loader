@@ -72,14 +72,28 @@ module.exports = function(source) {
   */
   let prepend = ['process = undefined;'];
 
-  compiler.$requires().forEach(filename => {
-    var resolved = resolveFilename(this, filename);
-    if (resolved.match(/\.js$/)) {
-      prepend.push(`require('${require.resolve('imports-loader')}!${resolved}');`);
-      prepend.push(`Opal.loaded('${filename}');`)
-    } else {
-      prepend.push(`require('!!${currentLoader}?file=${filename}&requirable=true!${resolved}');`);
-    }
+  const addRequires = files => {
+    files.forEach(filename => {
+      var resolved = resolveFilename(this, filename);
+      if (resolved.match(/\.js$/)) {
+        prepend.push(`require('${require.resolve('imports-loader')}!${resolved}');`);
+        prepend.push(`Opal.loaded('${filename}');`)
+      } else {
+        prepend.push(`require('!!${currentLoader}?file=${filename}&requirable=true!${resolved}');`);
+      }
+    })
+  }
+
+  addRequires(compiler.$requires())
+
+  var currentContext = this.context;
+  compiler.$required_trees().forEach(function (dirname) {
+    let resolved = path.resolve(currentContext, dirname)
+    let files = fs.readdirSync(resolved)
+    let withPath = []
+    // fs.readdir only return the filenames, not the base directory
+    files.forEach(function (filename) { withPath.push(path.join(resolved, filename)) })
+    addRequires(withPath)
   })
 
   let combinedResult = prepend.join(" ") + "\n" + result;
