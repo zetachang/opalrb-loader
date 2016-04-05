@@ -88,10 +88,12 @@ module.exports = function(source) {
 
   var currentContext = this.context;
   compiler.$required_trees().forEach(function (dirname) {
+    // path will only be relative to the file we're processing
     let resolved = path.resolve(currentContext, dirname)
+    // TODO: Look into making this async
     let files = fs.readdirSync(resolved)
     let withPath = []
-    // fs.readdir only return the filenames, not the base directory
+    // fs.readdir only returns the filenames, not the base directory
     files.forEach(function (filename) { withPath.push(path.join(resolved, filename)) })
     addRequires(withPath)
   })
