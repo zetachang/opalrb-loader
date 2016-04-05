@@ -97,6 +97,28 @@ describe('Opal loader', function(){
     });
   });
 
+  it("loads require_relative", function (done) {
+    const config = assign({}, globalConfig, {
+      entry: './test/fixtures/relative.js'
+    });
+    webpack(config, function(err, stats) {
+      expect(err).to.be(null);
+
+      fs.readdir(outputDir, function(err, files) {
+        expect(err).to.be(null);
+        expect(files.length).to.equal(1);
+        fs.readFile(path.resolve(outputDir, files[0]), function(err, data) {
+          var subject = data.toString();
+
+          expect(err).to.be(null);
+          expect(subject).to.match(/Opal\.cdecl\(\$scope, 'HELLO', 123\)/);
+
+          return done();
+        });
+      })
+    });
+  });
+
   it("outputs correct source maps", function (done) {
     this.timeout(10000);
     execSync("bundle exec opal -c -e \"require 'opal'\" > test/output/loader/opal.js");
