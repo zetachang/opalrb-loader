@@ -25,8 +25,7 @@ module SourceMap
 end
 
 # Backports from opal 0.10
-dummy_path = Pathname.new('foo')
-unless dummy_path.respond_to?(:+) && dummy_path.respond_to?(:join)
+unless Pathname.method_defined?(:+) && Pathname.method_defined?(:join)
   class Pathname
     def +(other)
       other = Pathname.new(other) unless Pathname === other
