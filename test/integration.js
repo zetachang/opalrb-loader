@@ -9,6 +9,7 @@ var fs = require('fs');
 var path = require('path');
 var webpack = require('webpack');
 var execSync = require('child_process').execSync;
+var fsExtra = require('fs-extra');
 
 describe('Opal loader', function(){
   var opalLoader = path.resolve(__dirname, '../');
@@ -30,6 +31,11 @@ describe('Opal loader', function(){
     });
   });
 
+  afterEach(function(done) {
+    // cleanup
+    fsExtra.copy('./test/fixtures/dependency.rb.backup', './test/fixtures/dependency.rb', {clobber: true}, done)
+  })
+
   it("loads correctly", function (done) {
     const config = assign({}, globalConfig, {
       entry: './test/fixtures/basic.js'
@@ -49,6 +55,32 @@ describe('Opal loader', function(){
           return done();
         });
       })
+    });
+  });
+
+  it("reloads dependencies properly", function (done) {
+    this.timeout(6000)
+    const config = assign({}, globalConfig, {
+      entry: './test/fixtures/requires.js'
+    });
+    webpack(config, function(err, stats) {
+      expect(err).to.be(null)
+      fsExtra.copySync('./test/fixtures/dependency.rb', './test/fixtures/dependency.rb.backup', {clobber: true})
+      fs.writeFileSync('./test/fixtures/dependency.rb', 'HELLO=456')
+      setTimeout(function() {
+        fs.readdir(outputDir, function(err, files) {
+          expect(err).to.be(null);
+          expect(files.length).to.equal(1);
+          fs.readFile(path.resolve(outputDir, files[0]), function(err, data) {
+            var subject = data.toString();
+
+            expect(err).to.be(null);
+            expect(subject).to.match(/Opal\.cdecl\(\$scope, 'HELLO', 123\)/);
+
+            return done();
+          })
+        })
+      }, 3000)
     });
   });
 

@@ -39,3 +39,4 @@ index.js
 
 # test files
 test/output
+test/fixtures/*.backup
