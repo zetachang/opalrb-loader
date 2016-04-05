@@ -1,20 +1,22 @@
 'use strict';
 
-var assert = require('assert');
-var rimraf = require('rimraf');
-var assign = require('object-assign');
-var expect = require('expect.js');
-var mkdirp = require('mkdirp');
-var fs = require('fs');
-var path = require('path');
-var webpack = require('webpack');
-var execSync = require('child_process').execSync;
-var fsExtra = require('fs-extra');
+const assert = require('assert');
+const rimraf = require('rimraf');
+const assign = require('object-assign');
+const expect = require('expect.js');
+const mkdirp = require('mkdirp');
+const fs = require('fs');
+const path = require('path');
+const webpack = require('webpack');
+const execSync = require('child_process').execSync;
+const fsExtra = require('fs-extra');
 
 describe('Opal loader', function(){
-  var opalLoader = path.resolve(__dirname, '../');
-  var outputDir = path.resolve(__dirname, './output/loader');
-  var globalConfig = {
+  const dependencyMain = './test/fixtures/dependency.rb'
+  const dependencyBackup = './test/fixtures/dependency.rb.backup'
+  const opalLoader = path.resolve(__dirname, '../');
+  const outputDir = path.resolve(__dirname, './output/loader');
+  const globalConfig = {
       output: {
         path: outputDir,
         filename: '[id].loader.js',
@@ -24,30 +26,30 @@ describe('Opal loader', function(){
       },
     };
 
-  beforeEach(function(done) {
-    fsExtra.copySync('./test/fixtures/dependency.rb', './test/fixtures/dependency.rb.backup', {clobber: true})
+  beforeEach(done => {
+    fsExtra.copySync(dependencyMain, dependencyBackup, {clobber: true})
     rimraf(outputDir, function(err) {
       if (err) { return done(err); }
       mkdirp(outputDir, done);
     });
   });
 
-  afterEach(function(done) {
+  afterEach(done => {
     // cleanup
-    fsExtra.copy('./test/fixtures/dependency.rb.backup', './test/fixtures/dependency.rb', {clobber: true}, done)
+    fsExtra.copy(dependencyBackup, dependencyMain, {clobber: true}, done)
   })
 
-  it("loads correctly", function (done) {
+  it("loads correctly", done => {
     const config = assign({}, globalConfig, {
       entry: './test/fixtures/basic.js'
     });
-    webpack(config, function(err, stats) {
+    webpack(config, (err, stats) => {
       expect(err).to.be(null);
 
-      fs.readdir(outputDir, function(err, files) {
+      fs.readdir(outputDir, (err, files) => {
         expect(err).to.be(null);
         expect(files.length).to.equal(1);
-        fs.readFile(path.resolve(outputDir, files[0]), function(err, data) {
+        fs.readFile(path.resolve(outputDir, files[0]), (err, data) => {
           var subject = data.toString();
 
           expect(err).to.be(null);
@@ -64,14 +66,14 @@ describe('Opal loader', function(){
     const config = assign({}, globalConfig, {
       entry: './test/fixtures/requires.js'
     });
-    webpack(config, function(err, stats) {
+    webpack(config, (err, stats) => {
       expect(err).to.be(null)
-      fs.writeFileSync('./test/fixtures/dependency.rb', 'HELLO=456')
-      setTimeout(function() {
-        fs.readdir(outputDir, function(err, files) {
+      fs.writeFileSync(dependencyMain, 'HELLO=456')
+      setTimeout(() => {
+        fs.readdir(outputDir, (err, files) => {
           expect(err).to.be(null);
           expect(files.length).to.equal(1);
-          fs.readFile(path.resolve(outputDir, files[0]), function(err, data) {
+          fs.readFile(path.resolve(outputDir, files[0]), (err, data) => {
             var subject = data.toString();
 
             expect(err).to.be(null);
@@ -84,17 +86,17 @@ describe('Opal loader', function(){
     });
   });
 
-  it("loads requires correctly", function (done) {
+  it("loads requires correctly", done =>{
     const config = assign({}, globalConfig, {
       entry: './test/fixtures/requires.js'
     });
-    webpack(config, function(err, stats) {
+    webpack(config, (err, stats) => {
       expect(err).to.be(null);
 
-      fs.readdir(outputDir, function(err, files) {
+      fs.readdir(outputDir, (err, files) => {
         expect(err).to.be(null);
         expect(files.length).to.equal(1);
-        fs.readFile(path.resolve(outputDir, files[0]), function(err, data) {
+        fs.readFile(path.resolve(outputDir, files[0]), (err, data) => {
           var subject = data.toString();
 
           expect(err).to.be(null);
@@ -106,17 +108,17 @@ describe('Opal loader', function(){
     });
   });
 
-  it("loads require_tree", function (done) {
+  it("loads require_tree", done => {
     const config = assign({}, globalConfig, {
       entry: './test/fixtures/tree.js'
     });
-    webpack(config, function(err, stats) {
+    webpack(config, (err, stats) => {
       expect(err).to.be(null);
 
-      fs.readdir(outputDir, function(err, files) {
+      fs.readdir(outputDir, (err, files) => {
         expect(err).to.be(null);
         expect(files.length).to.equal(1);
-        fs.readFile(path.resolve(outputDir, files[0]), function(err, data) {
+        fs.readFile(path.resolve(outputDir, files[0]), (err, data) => {
           var subject = data.toString();
 
           expect(err).to.be(null);
@@ -129,17 +131,17 @@ describe('Opal loader', function(){
     });
   });
 
-  it("loads require_relative", function (done) {
+  it("loads require_relative", done => {
     const config = assign({}, globalConfig, {
       entry: './test/fixtures/relative.js'
     });
-    webpack(config, function(err, stats) {
+    webpack(config, (err, stats) => {
       expect(err).to.be(null);
 
-      fs.readdir(outputDir, function(err, files) {
+      fs.readdir(outputDir, (err, files) => {
         expect(err).to.be(null);
         expect(files.length).to.equal(1);
-        fs.readFile(path.resolve(outputDir, files[0]), function(err, data) {
+        fs.readFile(path.resolve(outputDir, files[0]), (err, data) => {
           var subject = data.toString();
 
           expect(err).to.be(null);
@@ -159,10 +161,10 @@ describe('Opal loader', function(){
       entry: './test/fixtures/source_maps.js',
       devtool: 'source-map'
     });
-    webpack(config, function(err, stats) {
+    webpack(config, (err, stats) => {
       expect(err).to.be(null);
 
-      fs.readdir(outputDir, function(err, files) {
+      fs.readdir(outputDir, (err, files) => {
         expect(err).to.be(null);
         expect(files.length).to.equal(3);
         var output = execSync("node -r ./test/output/loader/opal.js -r ./test/fixtures/load_source_maps.js ./test/output/loader/0.loader.js 2>&1 || true").toString()
